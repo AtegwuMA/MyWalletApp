@@ -15,7 +15,6 @@ import javax.validation.Valid;
 @RequestMapping("/api/auth")
 public class UserController {
 
-
     private final UserService userService;
 
     // Endpoint for user registration

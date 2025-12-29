@@ -37,5 +37,4 @@ public class UserDTOMapper implements Function<User, UserSignUpResponse> {
                 .build();
     }
 
-
 }

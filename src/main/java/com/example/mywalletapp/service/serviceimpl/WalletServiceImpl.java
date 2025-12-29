@@ -1,7 +1,5 @@
 package com.example.mywalletapp.service.serviceimpl;
 
-//public class WalletServiceImpl {
-
 import com.example.mywalletapp.dto.requestdto.AddWalletRequest;
 import com.example.mywalletapp.dto.requestdto.TransactionAmount;
 import com.example.mywalletapp.dto.requestdto.UpdateWalletTierLimitsRequestDto;
@@ -20,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -80,14 +79,14 @@ public class WalletServiceImpl implements WalletService {
 
             updateFundingStatistics(wallet, transaction.getAmount(), "fund");
 
-            return new GenericResponse(0, "Wallet funded successfully",
+            return new GenericResponse(HttpStatus.OK.value(), "Wallet funded successfully",
                                                 HttpStatus.OK
             );
 
         } catch (Exception e) {
             logger.error("Exception occurred: ", e);
 
-            return new GenericResponse(2, "Failed to fund wallet",
+            return new GenericResponse(HttpStatus.BAD_REQUEST.value(), "Failed to fund wallet",
                                                 HttpStatus.BAD_REQUEST
             );
         }
@@ -126,12 +125,12 @@ public class WalletServiceImpl implements WalletService {
 
             updateFundingStatistics(fromWallet, transaction.getAmount(), "transfer");
 
-            return new GenericResponse(0, "Funds transferred successfully",
+            return new GenericResponse(HttpStatus.OK.value(), "Funds transferred successfully",
                                                           HttpStatus.OK);
         } catch (Exception e) {
 
             logger.error("Exception occurred: ", e);
-            return new GenericResponse(2, "Failed to transfer funds",
+            return new GenericResponse(HttpStatus.BAD_REQUEST.value(), "Failed to transfer funds",
                                                           HttpStatus.BAD_REQUEST);
         }
     }
@@ -162,11 +161,11 @@ public class WalletServiceImpl implements WalletService {
 
             updateFundingStatistics(wallet, transaction.getAmount(), "withdraw");
 
-            return new GenericResponse(0, "Withdrawal successful",
+            return new GenericResponse(HttpStatus.OK.value(), "Withdrawal successful",
                                                          HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Exception occurred: ", e);
-            return new GenericResponse(2, "Failed to withdraw funds",
+            return new GenericResponse(HttpStatus.BAD_REQUEST.value(), "Failed to withdraw funds",
                                                          HttpStatus.BAD_REQUEST);
         }
     }
@@ -179,13 +178,13 @@ public class WalletServiceImpl implements WalletService {
             Wallet wallet = getWalletByUserIdAndWalletId(userId, walletId);
 
             double balance = wallet.getBalance();
-            return new GenericResponse(0, "Wallet balance retrieved successfully",
+            return new GenericResponse(HttpStatus.OK.value(), "Wallet balance retrieved successfully",
                                                           HttpStatus.OK, balance);
         } catch (Exception e) {
 
-            return new GenericResponse(2, "Failed to retrieve wallet balance: "
+            return new GenericResponse(HttpStatus.BAD_REQUEST.value(), "Failed to retrieve wallet balance: "
                                                           + e.getMessage(),
-                                                          HttpStatus.BAD_REQUEST, null);
+                                                          HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -202,10 +201,10 @@ public class WalletServiceImpl implements WalletService {
             newWallet.setUser(user); // Associate the new wallet with the user
             walletRepository.save(newWallet); // Save the new wallet to the database
 
-            return new GenericResponse(0, "Wallet added successfully",
+            return new GenericResponse(HttpStatus.CREATED.value(), "Wallet added successfully",
                                                           HttpStatus.CREATED, newWallet);
         } catch (Exception e) {
-            return new GenericResponse(2, "Failed to add wallet: " +
+            return new GenericResponse(HttpStatus.BAD_REQUEST.value(), "Failed to add wallet: " +
                                                           e.getMessage(),
                                                           HttpStatus.BAD_REQUEST);
         }
@@ -361,12 +360,12 @@ public class WalletServiceImpl implements WalletService {
             // Save the updated tier
             walletTierRepository.save(tier);
 
-            return new GenericResponse(0, "Transaction limits updated successfully",
+            return new GenericResponse(HttpStatus.OK.value(), "Transaction limits updated successfully",
                                                         HttpStatus.OK
             );
 
         } catch (RoleNotFoundException e) {
-            return new GenericResponse(1, "Role not found", HttpStatus.BAD_REQUEST);
+            return new GenericResponse(HttpStatus.BAD_REQUEST.value(), "Role not found", HttpStatus.BAD_REQUEST);
         }
     }
 }

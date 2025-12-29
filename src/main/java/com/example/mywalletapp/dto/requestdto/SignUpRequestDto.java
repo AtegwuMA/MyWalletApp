@@ -1,6 +1,5 @@
 package com.example.mywalletapp.dto.requestdto;
 
-
 import jakarta.validation.constraints.*;
 import lombok.*;
 

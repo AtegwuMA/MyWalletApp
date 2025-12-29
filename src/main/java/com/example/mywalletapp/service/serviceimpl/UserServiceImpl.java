@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         emailService.sendVerificationEmail(email, token);
         logger.info("Resend verification email sent to: {}", email);
-        return new GenericResponse(0,
+        return new GenericResponse(HttpStatus.OK.value(),
                 "Verification email resent. Please check your email.",
                 HttpStatus.OK
         );
@@ -271,7 +271,7 @@ public class UserServiceImpl implements UserService {
         if (user.isLocked()) {
             return new GenericResponse(2,
                     "Account is locked due to too many failed attempts",
-                             HttpStatus.UNAUTHORIZED, null);
+                             HttpStatus.UNAUTHORIZED);
         }
 
         try {
@@ -310,7 +310,7 @@ public class UserServiceImpl implements UserService {
                     .build();
 
         // Return response with token
-            return new GenericResponse(0, "Login successful",
+            return new GenericResponse(HttpStatus.OK.value(), "Login successful",
                                              HttpStatus.OK, response
             );
         }catch (Exception e) {
@@ -331,7 +331,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user); // Save the token in your user entity
 
         emailService.sendPasswordResetEmail(user.getEmail(), token);
-        return new GenericResponse(0, "Password reset email has been sent, check your mail.",
+        return new GenericResponse(HttpStatus.OK.value(), "Password reset email has been sent, check your mail.",
                 HttpStatus.OK
         );
     }
@@ -347,7 +347,7 @@ public class UserServiceImpl implements UserService {
         user.setResetToken(null); // Clear the reset token after usage
         userRepository.save(user);
 
-        return new GenericResponse(0, "Password reset successful", HttpStatus.OK);
+        return new GenericResponse(HttpStatus.OK.value(), "Password reset successful", HttpStatus.OK);
     }
 
 
@@ -396,7 +396,7 @@ public class UserServiceImpl implements UserService {
 
         // Validate the refresh token and generate a new access token
         if (refreshToken == null || !jwtUtil.validateJwtToken(refreshToken)) {
-            return new GenericResponse(2, "Invalid refresh token",
+            return new GenericResponse(HttpStatus.OK.value(), "Invalid refresh token",
                                                     HttpStatus.UNAUTHORIZED
             );
         }
@@ -407,7 +407,7 @@ public class UserServiceImpl implements UserService {
         // Generate a new access token based on the user's details
         String newAccessToken = jwtUtil.generateJwtToken((Authentication) userDetails);
 
-        return new GenericResponse(0, "Token refreshed",
+        return new GenericResponse(HttpStatus.OK.value(), "Token refreshed",
                                                     HttpStatus.OK, newAccessToken
         );
     }
